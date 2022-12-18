@@ -47,7 +47,6 @@
     )
   )
 
-
 (defmacro xdump (&rest list)
   (let ((exp '(xprint)))
     (dolist (x list)
