@@ -1,5 +1,5 @@
-;;;; xprint.el v1.1.2                ;;;;
-;;;; Last Modified: 2022/12/18 13:22 ;;;;
+;;;; xprint.el v1.1.3                ;;;;
+;;;; Last Modified: 2022/12/24 01:33 ;;;;
 
 (defun xprint (&rest args)
   (let ((raw nil))
@@ -172,3 +172,5 @@
 (defmacro xpand (form)
   `(xpand-macro (quote ,form))
   )
+
+(provide 'xprint)
