@@ -1,5 +1,7 @@
-;;;; xprint.el v1.1.3                ;;;;
-;;;; Last Modified: 2022/12/24 01:33 ;;;;
+;;;; xprint.el v1.2.0                ;;;;
+;;;; Last Modified: 2023/01/01 23:55 ;;;;
+
+(require 'cl-lib)
 
 (defun xprint (&rest args)
   (let ((raw nil))
