@@ -1,5 +1,5 @@
-;;;; xprint.el v1.2.1                ;;;;
-;;;; Last Modified: 2023/01/02 00:00 ;;;;
+;;;; xprint.el v1.2.2                ;;;;
+;;;; Last Modified: 2023/01/07 03:39 ;;;;
 
 (require 'cl-lib)
 (require 'cl-extra)
@@ -25,7 +25,9 @@
               (switch-to-buffer-other-window "*xprint*")
               )
             ;;(emacs-lisp-mode)
-            (lisp-interaction-mode)
+            ;;(lisp-interaction-mode)
+            (unless (derived-mode-p 'lisp-interaction-mode)
+              (lisp-interaction-mode))
             (goto-char (point-max))
             (insert msg)
             (insert "\n")
