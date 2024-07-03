@@ -1,5 +1,5 @@
-;;;; xprint.el v1.2.2                ;;;;
-;;;; Last Modified: 2023/01/07 03:39 ;;;;
+;;;; xprint.el v1.2.3                ;;;;
+;;;; Last Modified: 2024/07/04 00:35 ;;;;
 
 (require 'cl-lib)
 (require 'cl-extra)
@@ -176,6 +176,55 @@
 
 (defmacro xpand (form)
   `(xpand-macro (quote ,form))
+  )
+
+(defun xpand-macro-1 (form)
+  (let ((result (macroexpand-1 form))
+        (hash (make-hash-table :test #'equal)))
+    (xprint :raw "")
+    (xprint :raw ";;; Expanding Macro:")
+    (xprint
+     :raw
+     (xpp-to-string form)
+     )
+    (xprint :raw "    |")
+    (xprint :raw "    |")
+    (xprint :raw "    v")
+    (xpand-macro-scan
+     result
+     #'(lambda (sym data)
+         (let ((lst (gethash (symbol-name sym) data)))
+           (when (not (member sym lst))
+             (push sym lst)
+             (puthash (symbol-name sym) lst data)
+             )
+           )
+         )
+     hash
+     )
+    (setq result
+          (xpand-macro-scan
+           result
+           #'(lambda (sym data)
+               (let ((lst (gethash (symbol-name sym) data)))
+                 (if (= 1 (length lst)) sym
+                   (intern (format "%s_%d" sym (length (member sym lst))))
+                   )
+                 )
+               )
+           hash
+           )
+          )
+    (xprint
+     :raw
+     (xpp-to-string result)
+     )
+    result
+    )
+  )
+
+(defmacro xpand-1 (form)
+  `(xpand-macro-1 (quote ,form))
   )
 
 (provide 'xprint)
