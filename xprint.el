@@ -1,5 +1,5 @@
-;;;; xprint.el v1.3.0                ;;;;
-;;;; Last Modified: 2024/07/04 09:37 ;;;;
+;;;; xprint.el v1.3.1                ;;;;
+;;;; Last Modified: 2024/07/04 10:23 ;;;;
 
 (require 'cl-lib)
 (require 'cl-extra)
@@ -7,20 +7,16 @@
 
 (defun xprint (&rest args)
   (let ((raw nil)(count 0))
-    ;; (when (eq (car args) :raw)
-    ;;   (setq raw t)
-    ;;   (setq args (cdr args))
-    ;;   )
     (prog1 args
       (let ((msg ""))
         (dolist (arg args)
-          (if (zerop count) nil
-            (setq msg (concat msg " "))
-            )
           (cond
            ((eq arg :raw) (setq raw t))
            ((eq arg :exp) (setq raw nil))
            (t
+            (if (zerop count) nil
+              (setq msg (concat msg " "))
+              )
             (setq msg (concat msg (format (if raw "%s" "%S") arg)))
             (cl-incf count)
             )
