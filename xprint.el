@@ -1,22 +1,30 @@
-;;;; xprint.el v1.2.3                ;;;;
-;;;; Last Modified: 2024/07/04 00:35 ;;;;
+;;;; xprint.el v1.3.0                ;;;;
+;;;; Last Modified: 2024/07/04 09:37 ;;;;
 
 (require 'cl-lib)
 (require 'cl-extra)
+(require 'json)
 
 (defun xprint (&rest args)
-  (let ((raw nil))
-    (when (eq (car args) :raw)
-      (setq raw t)
-      (setq args (cdr args))
-      )
+  (let ((raw nil)(count 0))
+    ;; (when (eq (car args) :raw)
+    ;;   (setq raw t)
+    ;;   (setq args (cdr args))
+    ;;   )
     (prog1 args
       (let ((msg ""))
-        (dotimes (i (length args))
-          (if (zerop i) nil
+        (dolist (arg args)
+          (if (zerop count) nil
             (setq msg (concat msg " "))
             )
-          (setq msg (concat msg (format (if raw "%s" "%S") (nth i args))))
+          (cond
+           ((eq arg :raw) (setq raw t))
+           ((eq arg :exp) (setq raw nil))
+           (t
+            (setq msg (concat msg (format (if raw "%s" "%S") arg)))
+            (cl-incf count)
+            )
+           )
           )
         (if noninteractive (message "%s" msg)
           (let ((cb (current-buffer))
@@ -52,6 +60,18 @@
     )
   )
 
+(defmacro xprint-json (&rest args)
+  (setf args
+        (let ( result )
+          (dolist (arg args (nreverse result))
+            (push `(json-encode ,arg) result)
+            )
+          )
+        )
+  (setf args (cons :raw args))
+  `(xprint ,@args)
+  )
+
 (defmacro xdump (&rest list)
   (let ((exp '(xprint)))
     (dolist (x list)
@@ -59,6 +79,21 @@
         (push (list 'quote x) exp)
         (push := exp)
         (push x exp)
+        )
+      )
+    (reverse exp)
+    )
+  )
+
+(defmacro xdump-json (&rest list)
+  (let ((exp '(xprint)))
+    (dolist (x list)
+      (if (and (not (consp x)) (not (and (symbolp x) (not (keywordp x))))) (push x exp)
+        (push :exp exp)
+        (push (list 'quote x) exp)
+        (push := exp)
+        (push :raw exp)
+        (push (list 'json-encode x) exp)
         )
       )
     (reverse exp)
