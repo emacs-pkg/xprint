@@ -47,7 +47,9 @@
                   )
                 )
               )
-            (select-window cw)
+	    (ignore-errors
+              (select-window cw)
+	      )
             (switch-to-buffer cb)
             )
           )
