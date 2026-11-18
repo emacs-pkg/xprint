@@ -4,6 +4,7 @@
 (require 'cl-lib)
 (require 'cl-extra)
 (require 'json)
+(require 'view)
 
 (defun xprint (&rest args)
   (let ((raw nil)(count 0))
@@ -27,14 +28,15 @@
                 (cw (selected-window)))
             (if (equal (buffer-name) "*xprint*") nil
               (switch-to-buffer-other-window "*xprint*")
+              (when truncate-lines
+                (setq truncate-lines nil)
+                (force-mode-line-update)
+                )
               )
-            ;;(emacs-lisp-mode)
-            ;;(lisp-interaction-mode)
-            (unless (derived-mode-p 'lisp-interaction-mode)
-              (lisp-interaction-mode))
             (goto-char (point-max))
             (insert msg)
             (insert "\n")
+            (set-buffer-modified-p nil)
             (let ((wins (window-list)))
               (dolist (win wins)
                 (select-window win)
