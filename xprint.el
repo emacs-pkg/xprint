@@ -1,5 +1,6 @@
-;;;; xprint.el v1.3.1                ;;;;
-;;;; Last Modified: 2024/07/04 10:23 ;;;;
+;; -*- lexical-binding: t; -*-
+;;;; xprint.el v1.3.2                ;;;;
+;;;; Last Modified: 2026/11/19 02:40 ;;;;
 
 (require 'cl-lib)
 (require 'cl-extra)
